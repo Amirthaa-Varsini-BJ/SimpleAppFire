@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Weather.com</title>
+    <style>
+      .weather-cont {
+        align-items: center;
+        background-color: aquamarine;
+        font-size: medium;
+      }
+      h1 {
+        text-align: center;
+      }
+      p {
+        color: crimson;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>WeatherAPI</h1>
+    <p>City:</p>
+    <input type="text" id="city" required />
+    <button onclick="getWeather()">Get Weather</button>
+    <div id="weather-cont"></div>
+
+    <script>
+      const apikey = "8c38c4af9d4bb1698ad8832daccc0185";
+
+      function getWeather() {
+        const cityname = document.getElementById("city").value;
+        const apiurl = `https://api.openweathermap.org/data/2.5/weather?q=${cityname}&appid=${apikey}&units=metric`;
+        const cont = document.getElementById("weather-cont");
+
+        fetch(apiurl)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.cod !== 200) {
+              cont.innerHTML = "<p>City not found ❌</p>";
+              return;
+            }
+
+            cont.innerHTML = `
+              <p><strong>City:</strong> ${data.name}</p>
+              <p><strong>Temperature:</strong> ${data.main.temp}°C</p>
+              <p><strong>Weather:</strong> ${data.weather[0].description}</p>
+              <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="icon">
+            `;
+          })
+          .catch((err) => {
+            cont.innerHTML = "<p>Error fetching data ❗</p>";
+            console.error(err);
+          });
+      }
+    </script>
+  </body>
+</html>
